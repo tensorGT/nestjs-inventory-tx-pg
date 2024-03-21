@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  sku VARCHAR(60) UNIQUE NOT NULL,
+  stock INTEGER NOT NULL CHECK (stock >= 0),
+  price_cents INTEGER NOT NULL CHECK (price_cents > 0)
