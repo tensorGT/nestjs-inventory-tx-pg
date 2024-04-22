@@ -3,3 +3,9 @@ CREATE TABLE IF NOT EXISTS products (
   sku VARCHAR(60) UNIQUE NOT NULL,
   stock INTEGER NOT NULL CHECK (stock >= 0),
   price_cents INTEGER NOT NULL CHECK (price_cents > 0)
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER NOT NULL REFERENCES products(id),
+  qty INTEGER NOT NULL CHECK (qty > 0),
