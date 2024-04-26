@@ -33,3 +33,20 @@ class OrdersController {
 
       await client.query("UPDATE products SET stock = stock - $1 WHERE id = $2", [dto.qty, dto.productId]);
       const totalCents = prod.price_cents * dto.qty;
+      const orderRes = await client.query(
+        "INSERT INTO orders (product_id, qty, total_cents) VALUES ($1, $2, $3) RETURNING *",
+        [dto.productId, dto.qty, totalCents]
+      );
+      const order = orderRes.rows[0];
+      await client.query(
+        "INSERT INTO ledger_entries (order_id, delta_cents, note) VALUES ($1, $2, $3)",
+        [order.id, totalCents, `order #${order.id} (${dto.qty}x ${prod.sku})`]
+      );
+      await client.query("COMMIT");
+      return order;
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
