@@ -4,3 +4,6 @@ nestjs api for products, orders, and ledger rows using postgres `BEGIN / FOR UPD
 
 ```bash
 npm install
+npm run build
+npm start
+```

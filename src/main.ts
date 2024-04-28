@@ -50,3 +50,21 @@ class OrdersController {
     } finally {
       client.release();
     }
+  }
+
+  @Get("ledger")
+  async getLedger() {
+    const res = await pool.query("SELECT * FROM ledger_entries ORDER BY id DESC");
+    return res.rows;
+  }
+}
+
+@Module({ controllers: [OrdersController] })
+class AppModule {}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  await app.listen(process.env.PORT || 4011);
+}
+bootstrap();
